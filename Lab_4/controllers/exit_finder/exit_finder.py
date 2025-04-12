@@ -1,4 +1,6 @@
-"""exit_finder controller."""
+"""exit_finder controller.
+dokumentacja robocika: 
+"""
 
 from controller import Robot
 
