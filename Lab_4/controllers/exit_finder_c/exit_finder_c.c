@@ -47,15 +47,15 @@ int main() {
 
     // Logika nawigacji
     if (front_wall) {
-      printf("🔄 Ściana przed nami — skręcamy w prawo\n");
+      printf("Ściana przed nami — skręcamy w prawo\n");
       left_speed = MAX_SPEED;
       right_speed = -MAX_SPEED;
     } else if (left_wall) {
-      printf("⬆️ Ściana po lewej — jedziemy prosto\n");
+      printf("Ściana po lewej — jedziemy prosto\n");
       left_speed = MAX_SPEED;
       right_speed = MAX_SPEED;
     } else {
-      printf("↪️ Brak ściany po lewej — skręcamy w lewo\n");
+      printf("Brak ściany po lewej — skręcamy w lewo\n");
       left_speed = MAX_SPEED / 8;
       right_speed = MAX_SPEED;
     }
