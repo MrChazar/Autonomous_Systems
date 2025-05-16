@@ -1,0 +1,47 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.34979908828992795 0.3417446173979148 0.8722678569746153 2.3635408683303982
+  position 11.807228719872146 -9.758213728499111 17.423795998403477
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  translation -0.444013 -0.532383 1.37
+  rotation 0 0 -1 0
+  name "arena"
+  floorSize 10 10
+}
+DEF Maze-Crawler E-puck {
+  rotation 0 0 1 3.1362676534873364
+  name "Maze-Crawler"
+  controller "exit_finder_c_W"
+  controllerArgs [
+    ""
+  ]
+  battery [
+    0
+  ]
+}
+E-puck {
+  hidden position_0_0 100.41686116260308
+  hidden position_0_1 110.04559778807607
+  hidden linearVelocity_0 -0.054296158211126 -0.013593197570410867 -2.1776061212126003e-08
+  hidden angularVelocity_0 -0.0016664710410160856 0.006699979072953912 0.08647221821256441
+  hidden rotation_1 0 -1 0 0.11410375227030045
+  hidden rotation_2 0 -0.9999999999999999 0 3.051737741156491
+  translation 4.500270837396712 0.030241723815469815 1.369935729507703
+  rotation -0.0003090099092576133 1.562275991883334e-05 0.9999999521344015 -2.8946626582243367
+  name "Maze-Generator"
+  controller "Maze_Generator"
+  supervisor TRUE
+}
