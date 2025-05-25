@@ -56,6 +56,6 @@ E-puck {
   translation 4.500270837396712 0.030241723815469815 1.369935729507703
   rotation -0.0003090099092576133 1.562275991883334e-05 0.9999999521344015 -2.8946626582243367
   name "Maze-Generator"
-  controller "Maze_Generator_W"
+  controller "Maze_Generator_W_2"
   supervisor TRUE
 }

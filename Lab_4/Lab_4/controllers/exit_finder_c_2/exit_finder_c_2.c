@@ -15,6 +15,8 @@
 
 int main() {
     wb_robot_init();
+    
+    const char *robot_name = wb_robot_get_name();
 
     // Inicjalizacja kamery
     WbDeviceTag camera = wb_robot_get_device("camera");
@@ -26,9 +28,17 @@ int main() {
     WbDeviceTag emitter = wb_robot_get_device("emitter");
     WbDeviceTag receiver = wb_robot_get_device("receiver");
     wb_receiver_enable(receiver, TIME_STEP);
-    wb_emitter_set_channel(emitter, COMMUNICATION_CHANNEL);
-    wb_receiver_set_channel(receiver, COMMUNICATION_CHANNEL);
-
+    
+    if(strcmp(robot_name, "Maze-Crawler_1") == 0)
+    {
+      wb_emitter_set_channel(emitter, 1);
+      wb_receiver_set_channel(receiver, 2);
+    }
+    else{
+      wb_emitter_set_channel(emitter, 2);
+      wb_receiver_set_channel(receiver, 1);
+    }
+    
     // Inicjalizacja silników
     WbDeviceTag left_motor = wb_robot_get_device("left wheel motor");
     WbDeviceTag right_motor = wb_robot_get_device("right wheel motor");
@@ -50,9 +60,10 @@ int main() {
     enum State state = SEARCHING;
     bool is_leader = false;
     bool exit_found = false;
-    srand(time(NULL)); // Inicjalizacja generatora losowego
+    srand(time(NULL)); 
 
     while (wb_robot_step(TIME_STEP) != -1) {
+        
         // Odczyt czujników odległości
         double sensor_values[8];
         for (int i = 0; i < 8; i++) {
@@ -76,42 +87,36 @@ int main() {
             }
         }
 
-        // Domyślne prędkości
+       
         double left_speed = 0.0;
         double right_speed = 0.0;
-
-        // Logika w zależności od stanu
+        printf("%d", state);
         if (exit_found) {
-            // Zatrzymaj się po znalezieniu wyjścia
             printf("Wykryto wyjście!\n");
             state = SEARCHING;
         } else if (state == SEARCHING) {
-            // Algorytm "left-hand rule"
             bool left_wall = sensor_values[5] > 80;
             bool front_wall = sensor_values[7] > 80 || sensor_values[0] > 80;
 
             if (front_wall) {
                 left_speed = MAX_SPEED;
-                right_speed = -MAX_SPEED; // Skręt w prawo
+                right_speed = -MAX_SPEED; 
             } else if (left_wall) {
                 left_speed = MAX_SPEED;
-                right_speed = MAX_SPEED; // Prosto
+                right_speed = MAX_SPEED; 
             } else {
                 left_speed = MAX_SPEED / 8;
-                right_speed = MAX_SPEED; // Skręt w lewo
+                right_speed = MAX_SPEED;
             }
 
-            // Wykrycie innego robota
             if (green_pixels > 1) {
                 printf("Wykryto innego robota! Rozpoczynam komunikację.\n");
                 state = COMMUNICATING;
-                // Losowy wybór lidera
                 is_leader = (rand() % 2 == 0);
                 const char *message = is_leader ? "LEADER" : "FOLLOWER";
                 wb_emitter_send(emitter, message, strlen(message) + 1);
             }
         } else if (state == COMMUNICATING) {
-            // Odbieranie wiadomości
             if (wb_receiver_get_queue_length(receiver) > 0) {
                 const char *message = (const char *)wb_receiver_get_data(receiver);
                 if (strcmp(message, "LEADER") == 0 && !is_leader) {
@@ -124,12 +129,10 @@ int main() {
                 wb_receiver_next_packet(receiver);
             }
         } else if (state == LEADER) {
-            // Algorytm "left-hand rule" dla lidera
             bool left_wall = sensor_values[5] > 80;
             bool front_wall = sensor_values[7] > 80 || sensor_values[0] > 80;
 
             if (front_wall && left_wall) {
-                // Lider utknął, zamiana ról
                 printf("Lider utknął! Zamiana ról.\n");
                 state = FOLLOWER;
                 is_leader = false;
@@ -146,18 +149,15 @@ int main() {
                 right_speed = MAX_SPEED;
             }
         } else if (state == FOLLOWER) {
-            // Podążanie za liderem (śledzenie zielonego elementu)
             if (green_pixels > 1) {
-                // Zielony element w polu widzenia, jedź prosto
                 left_speed = MAX_SPEED * 0.5;
                 right_speed = MAX_SPEED * 0.5;
             } else {
-                // Szukaj lidera (obrót w miejscu)
                 left_speed = MAX_SPEED / 4;
                 right_speed = -MAX_SPEED / 4;
             }
 
-            // Sprawdzenie, czy lider chce zamienić role
+         
             if (wb_receiver_get_queue_length(receiver) > 0) {
                 const char *message = (const char *)wb_receiver_get_data(receiver);
                 if (strcmp(message, "FOLLOWER") == 0) {
@@ -171,7 +171,7 @@ int main() {
             }
         }
 
-        // Ustawienie prędkości silników
+   
         wb_motor_set_velocity(left_motor, left_speed);
         wb_motor_set_velocity(right_motor, right_speed);
     }
