@@ -24,7 +24,7 @@ RectangleArena {
 DEF Maze-Crawler_1 E-puck {
   rotation 0 0 1 3.1362676534873364
   name "Maze-Crawler_1"
-  controller "exit_finder_c_W"
+  controller "exit_finder_c_2"
   controllerArgs [
     ""
   ]
@@ -37,7 +37,7 @@ DEF Maze-Crawler_2 E-puck {
   translation 0.1 0 0.1
   rotation 0 0 1 3.1362676534873364
   name "Maze-Crawler_2"
-  controller "exit_finder_c_W"
+  controller "exit_finder_c_2"
   controllerArgs [
     ""
   ]

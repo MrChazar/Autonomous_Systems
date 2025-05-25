@@ -5,7 +5,7 @@ sceneTreePerspectives: 000000ff000000010000000300000022000000c0000000fa010000000
 maximizedDockId: -1
 centralWidgetVisible: 1
 orthographicViewHeight: 1
-textFiles: 1 "controllers/Maze_Generator_W/Maze_Generator_W.c" "controllers/exit_finder_c_W/exit_finder_c_W.c"
+textFiles: 2 "controllers/exit_finder_c_2/exit_finder_c_2.c" "controllers/Maze_Generator_W/Maze_Generator_W.c" "controllers/Maze_Generator_W_2/Maze_Generator_W_2.c"
 consoles: Console:All:All
 renderingDevicePerspectives: Maze-Crawler_1:camera;1;1;0;0
 renderingDevicePerspectives: Maze-Crawler_2:camera;1;1;0;0
