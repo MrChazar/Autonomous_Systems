@@ -27,11 +27,13 @@ width = camera_front.getWidth()
 height = camera_front.getHeight()
 
 search_time = 0.0
-state = "SEARCH"  # inne: "PUSH", "REVERSE", "DONE"
-timer = 0
+state = "SEARCH"  # inne: "PUSH", "REVERSE", "IDLE_AFTER_REVERSE", "DONE"
+timer = 0.0
+reverse_start = 0.0
+idle_start = 0.0
 
 # Funkcje pomocnicze
-def detect_black_ball(image):
+def detect_blue_ball(image):
     for y in range(0, height, 4):
         for x in range(0, width, 4):
             r = camera_front.imageGetRed(image, width, x, y)
@@ -54,15 +56,16 @@ def is_on_white_line(image):
 
 # Główna pętla
 while robot.step(TIMESTEP) != -1:
+    print(f"We are in state {state}")
     timer += TIMESTEP / 1000.0
     image_front = camera_front.getImage()
     image_bottom = camera_bottom.getImage()
 
     if state == "SEARCH":
-        found, x = detect_black_ball(image_front)
+        found, x = detect_blue_ball(image_front)
+        print(f"Ball found: {found}")
         if found:
             search_time = 0
-            # podążaj do piłki
             if x < width // 3:
                 left_speed = 0.2 * MAX_SPEED
                 right_speed = 0.5 * MAX_SPEED
@@ -88,9 +91,16 @@ while robot.step(TIMESTEP) != -1:
 
     elif state == "REVERSE":
         if timer - reverse_start > 1.0:
-            state = "SEARCH"
+            state = "IDLE_AFTER_REVERSE"
+            idle_start = timer
         left_speed = -0.5 * MAX_SPEED
         right_speed = -0.5 * MAX_SPEED
+
+    elif state == "IDLE_AFTER_REVERSE":
+        if timer - idle_start > 1.0:
+            state = "SEARCH"
+        left_speed = 0.3 * MAX_SPEED
+        right_speed = 0.3 * MAX_SPEED
 
     elif state == "DONE":
         left_speed = right_speed = 0.0
