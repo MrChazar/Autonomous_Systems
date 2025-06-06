@@ -8,8 +8,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation -0.4702757980798106 -0.12953671808689163 0.8729610027989075 3.8736057130925565
-  position -0.4896968399114112 0.42139524757660507 1.948931263636035
+  orientation 0.3885929133659768 0.4409365980825067 -0.8090552911594909 1.2830088285678063
+  position -2.082082166293075 3.4037944040828885 3.0991558153200227
 }
 TexturedBackground {
 }
@@ -18,51 +18,52 @@ TexturedBackgroundLight {
 RectangleArena {
   floorSize 10 10
 }
-DEF BALL_BLUE Solid {
-  translation -1.2857734247246673 -0.2008593147827023 0.02397269917582369
-  rotation -0.1855827820402064 0.23208786600915182 -0.954826818570538 -1.084549320014914
+DEF LEFT_SQUARE Solid {
+  translation -2 0 0.001
   children [
-    DEF BALL Shape {
-      appearance Appearance {
-        material Material {
-          diffuseColor 0 0 1
-        }
-      }
-      geometry Sphere {
-        radius 0.025
+    Shape {
+      geometry Plane {
+        size 0.1 4
       }
     }
   ]
-  boundingObject USE BALL
-  physics Physics {
-    density 10000
-  }
-  linearVelocity -0.12448008222843221 -0.008687038272762166 2.0799783757299824e-10
-  angularVelocity 0.3474815309104866 -4.979203289137288 1.1080544387885416
 }
-DEF BALL_WHITE Solid {
-  translation -1.43316 -0.116539 0.0317978
-  rotation -0.1855827820402064 0.23208786600915182 -0.954826818570538 -1.084549320014914
+DEF RIGHT_SQUARE Solid {
+  translation 2 0 0.001
   children [
-    DEF BALL Shape {
-      appearance Appearance {
-        material Material {
-          diffuseColor 1 1 1
-        }
-      }
-      geometry Sphere {
-        radius 0.025
+    Shape {
+      geometry Plane {
+        size 0.1 4
       }
     }
   ]
   name "solid(1)"
-  boundingObject USE BALL
-  physics Physics {
-    density 10000
-  }
+}
+DEF TOP_SQUARE Solid {
+  translation 0 2 0.001
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      geometry Plane {
+        size 0.1 4
+      }
+    }
+  ]
+  name "solid(2)"
+}
+DEF BOTTOM_SQUARE Solid {
+  translation 0 -2 0.001
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      geometry Plane {
+        size 0.1 4
+      }
+    }
+  ]
+  name "solid(3)"
 }
 Robot {
-  translation -1.1133140219146656 -0.1838143318356678 0.0048504656323879805
   rotation -0.05873448547867834 -0.003953122711390939 0.9982658128155966 -3.007019932286464
   children [
     DEF SENSOR_2 DistanceSensor {
@@ -195,8 +196,6 @@ Robot {
         boundingObject USE WHEEL
         physics DEF WHEEL_PHYSICS Physics {
         }
-        linearVelocity -0.07778712136892256 -0.01054102921781361 -3.6130307388636176e-07
-        angularVelocity 0.4217625927320534 -3.111506841480665 -4.0917502662184156e-05
       }
     }
     HingeJoint {
@@ -220,8 +219,6 @@ Robot {
         boundingObject USE WHEEL
         physics Physics {
         }
-        linearVelocity -0.07778136415866044 -0.010540262016495999 5.817345128825088e-07
-        angularVelocity 0.42176259807672567 -3.111506547752383 -4.091691283748711e-05
       }
     }
     DEF TEETH_1 Solid {
@@ -258,22 +255,13 @@ Robot {
   physics Physics {
   }
   controller "Robot_Controller"
-  linearVelocity -0.07779521754926287 -0.010534279508192005 -1.8967994680356279e-06
-  angularVelocity -0.00024770527562011194 5.171757618793278e-06 -0.00010105085024795054
 }
-E-puck {
-  hidden position_0_0 47.58425239732039
-  hidden position_0_1 52.26250285338095
-  hidden linearVelocity_0 -0.0043180850550411645 0.05588645634284456 -2.1301394023482873e-08
-  hidden angularVelocity_0 -0.011186168844110658 -0.0008514522468905108 0.0921479691544538
-  hidden translation_1 0 0.025999999999999995 0.02
-  hidden rotation_1 0 -0.9999999999999999 0 2.6812300601163006
-  hidden linearVelocity_1 -0.00413739216674515 0.05355342188923169 4.871180436709414e-09
-  hidden angularVelocity_1 -2.6662940715099257 -0.2060580140388974 0.09386429928316288
-  hidden translation_2 0 -0.026 0.02
-  hidden rotation_2 0 1 0 1.9970203959442596
-  hidden linearVelocity_2 -0.004507043046539907 0.05833149619281551 -5.345117060636569e-09
-  hidden angularVelocity_2 -2.9278297914458276 -0.22615425983083162 0.09412940058972809
-  translation -4.1947783897464515 -0.435085204912035 -6.430994545172583e-05
-  rotation -2.189662175191306e-05 0.00012544094438836505 0.9999999918925536 1.6496468751984414
+DEF Field-Generator E-puck {
+  hidden linearVelocity_0 0.00012668056913765034 3.193281336734061e-05 4.220356628603153e-08
+  hidden angularVelocity_0 -0.0021289378241296404 0.008445702677848372 7.52138996680323e-11
+  translation 4.500270792448076 0.030241718862717235 1.3699360486382162
+  rotation 0.0005418693470925839 6.7243900703376e-05 0.9999998509279231 -2.894663232078724
+  name "Maze-Generator"
+  controller "Create_Stadium"
+  supervisor TRUE
 }

@@ -1,32 +1,65 @@
-"""Create_Stadium controller."""
+from controller import Supervisor
+import random
 
-# You may need to import some classes of the controller module. Ex:
-#  from controller import Robot, Motor, DistanceSensor
-from controller import Robot
+TIME_STEP = 32
+BALL_RADIUS = 0.025
+BALL_DENSITY = 10000
+AREA_SIZE = 2
 
-# create the Robot instance.
-robot = Robot()
+supervisor = Supervisor()
+root = supervisor.getRoot()
+children_field = root.getField("children")
 
-# get the time step of the current world.
-timestep = int(robot.getBasicTimeStep())
+def create_ball(def_name, color, position):
+    r, g, b = color
+    x, y, z = position
+    proto = f"""
+    Solid {{
+      translation {x:.3f} {y:.3f} {z:.3f}
+      rotation 0 1 0 0
+      children [
+        DEF {def_name}_SHAPE Shape {{
+          appearance Appearance {{
+            material Material {{
+              diffuseColor {r} {g} {b}
+            }}
+          }}
+          geometry Sphere {{
+            radius {BALL_RADIUS}
+          }}
+        }}
+      ]
+      boundingObject USE {def_name}_SHAPE
+      physics Physics {{
+        density {BALL_DENSITY}
+      }}
+    }}"""
+    children_field.importMFNodeFromString(-1, proto)
 
-# You should insert a getDevice-like function in order to get the
-# instance of a device of the robot. Something like:
-#  motor = robot.getDevice('motorname')
-#  ds = robot.getDevice('dsname')
-#  ds.enable(timestep)
 
-# Main loop:
-# - perform simulation steps until Webots is stopping the controller
-while robot.step(timestep) != -1:
-    # Read the sensors:
-    # Enter here functions to read sensor data, like:
-    #  val = ds.getValue()
 
-    # Process sensor data here.
+def generate_positions(n, min_dist=0.07):
+    positions = []
+    tries = 0
+    while len(positions) < n and tries < 2000:
+        x = random.uniform(-AREA_SIZE + BALL_RADIUS, AREA_SIZE - BALL_RADIUS)
+        y = random.uniform(AREA_SIZE*-1, AREA_SIZE - BALL_RADIUS)
+        z = random.uniform(-AREA_SIZE + BALL_RADIUS, AREA_SIZE - BALL_RADIUS)
+        pos = (x, y, z)
+        if all(((px - x)**2 + (py - y)**2 + (pz - z)**2)**0.5 >= min_dist for px, py, pz in positions):
+            positions.append(pos)
+        tries += 1
+    return positions
 
-    # Enter here functions to send actuator commands, like:
-    #  motor.setPosition(10.0)
-    pass
+import math
 
-# Enter here exit cleanup code.
+elapsed = 0
+while supervisor.step(TIME_STEP) != -1:
+    elapsed += TIME_STEP / 1000.0
+    if elapsed > 2.0:
+       # create_arena_outline()
+        positions = generate_positions(20)
+        for i in range(10):
+            create_ball(f"BALL_BLUE_{i}", (0, 0, 1), positions[i])
+            create_ball(f"BALL_WHITE_{i}", (1, 1, 1), positions[i + 10])
+        break
