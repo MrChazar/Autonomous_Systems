@@ -3,9 +3,9 @@ from controller import Robot
 # Parametry
 TIMESTEP = 64
 MAX_SPEED = 6.28
-BALL_COLOR_THRESHOLD = 50
+BALL_COLOR_THRESHOLD = 20
 WHITE_LINE_THRESHOLD = 200
-SEARCH_TIMEOUT = 10.0  
+SEARCH_TIMEOUT = 50.0  
 
 # Inicjalizacja robota
 robot = Robot()
@@ -31,16 +31,14 @@ state = "SEARCH"  # inne: "PUSH", "REVERSE", "IDLE_AFTER_REVERSE", "DONE"
 timer = 0.0
 reverse_start = 0.0
 idle_start = 0.0
-
 # Funkcje pomocnicze
 def detect_blue_ball(image):
-    for y in range(0, height, 4):
-        for x in range(0, width, 4):
-            r = camera_front.imageGetRed(image, width, x, y)
-            g = camera_front.imageGetGreen(image, width, x, y)
-            b = camera_front.imageGetBlue(image, width, x, y)
-            if r < BALL_COLOR_THRESHOLD and g < BALL_COLOR_THRESHOLD and b < BALL_COLOR_THRESHOLD:
-                return True, x
+    for x in range(0, width, 4):
+        r = camera_front.imageGetRed(image, width, x, 22)
+        g = camera_front.imageGetGreen(image, width, x, 22)
+        b = camera_front.imageGetBlue(image, width, x, 22)
+        if r > BALL_COLOR_THRESHOLD and g < BALL_COLOR_THRESHOLD and b < BALL_COLOR_THRESHOLD:
+            return True, x
     return False, -1
 
 def is_on_white_line(image):
@@ -60,18 +58,23 @@ while robot.step(TIMESTEP) != -1:
     timer += TIMESTEP / 1000.0
     image_front = camera_front.getImage()
     image_bottom = camera_bottom.getImage()
-
     if state == "SEARCH":
+        if is_on_white_line(image_bottom):
+            state = "REVERSE"
+            reverse_start = timer
         found, x = detect_blue_ball(image_front)
-        print(f"Ball found: {found}")
+        print(f"Ball found: {found}, {x}, {width//3}")
         if found:
+            print(sensor_front.getValue())
             search_time = 0
-            if x < width // 3:
-                left_speed = 0.2 * MAX_SPEED
+            if sensor_front.getValue()<500:
+                state = "PUSH"
+            if x > width // 3:
+                left_speed = 0.25 * MAX_SPEED
                 right_speed = 0.5 * MAX_SPEED
-            elif x > 2 * width // 3:
+            elif x < (2 * width // 3):
                 left_speed = 0.5 * MAX_SPEED
-                right_speed = 0.2 * MAX_SPEED
+                right_speed = 0.25 * MAX_SPEED
             else:
                 left_speed = right_speed = 0.5 * MAX_SPEED
                 state = "PUSH"
@@ -84,23 +87,25 @@ while robot.step(TIMESTEP) != -1:
             state = "DONE"
 
     elif state == "PUSH":
+        
+        found, x = detect_blue_ball(image_front)
         if is_on_white_line(image_bottom):
             state = "REVERSE"
             reverse_start = timer
-        left_speed = right_speed = 0.5 * MAX_SPEED
+        elif x > width // 3 and not(sensor_front.getValue()<500):
+            left_speed = 0.2 * MAX_SPEED
+            right_speed = 0.5 * MAX_SPEED
+        elif x < 2 * width // 3 and not(sensor_front.getValue()<500):
+            left_speed = 0.5 * MAX_SPEED
+            right_speed = 0.2 * MAX_SPEED
+        else:
+            left_speed = right_speed = 0.5 * MAX_SPEED
 
     elif state == "REVERSE":
-        if timer - reverse_start > 1.0:
-            state = "IDLE_AFTER_REVERSE"
-            idle_start = timer
-        left_speed = -0.5 * MAX_SPEED
-        right_speed = -0.5 * MAX_SPEED
-
-    elif state == "IDLE_AFTER_REVERSE":
-        if timer - idle_start > 1.0:
+        if timer - reverse_start > 2.5:
             state = "SEARCH"
-        left_speed = 0.3 * MAX_SPEED
-        right_speed = 0.3 * MAX_SPEED
+        left_speed = -0.25 * MAX_SPEED
+        right_speed = -0.5 * MAX_SPEED
 
     elif state == "DONE":
         left_speed = right_speed = 0.0

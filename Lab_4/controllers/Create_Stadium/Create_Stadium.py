@@ -3,7 +3,7 @@ import random
 
 TIME_STEP = 32
 BALL_RADIUS = 0.025
-BALL_DENSITY = 10000
+BALL_DENSITY = 1
 AREA_SIZE = 2
 
 supervisor = Supervisor()
@@ -56,10 +56,10 @@ import math
 elapsed = 0
 while supervisor.step(TIME_STEP) != -1:
     elapsed += TIME_STEP / 1000.0
-    if elapsed > 2.0:
+    if elapsed:
        # create_arena_outline()
         positions = generate_positions(20)
         for i in range(10):
-            create_ball(f"BALL_BLUE_{i}", (0, 0, 1), positions[i])
+            create_ball(f"BALL_BLACK_{i}", (1, 0, 0), positions[i])
             create_ball(f"BALL_WHITE_{i}", (1, 1, 1), positions[i + 10])
         break

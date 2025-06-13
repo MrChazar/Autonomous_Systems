@@ -2,21 +2,18 @@
 
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
-EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/Floor.proto"
 
 WorldInfo {
 }
 Viewpoint {
   orientation 0.3885929133659768 0.4409365980825067 -0.8090552911594909 1.2830088285678063
-  position -2.082082166293075 3.4037944040828885 3.0991558153200227
+  position -3.837756732314687 6.20696809162553 6.235779492332001
 }
 TexturedBackground {
 }
 TexturedBackgroundLight {
-}
-RectangleArena {
-  floorSize 10 10
 }
 DEF LEFT_SQUARE Solid {
   translation -2 0 0.001
@@ -114,9 +111,9 @@ Robot {
       ]
       name "sensor_3"
     }
-    DEF CAMERA_BOTTOM Camera {
+    DEF CAMERA_FRONT Camera {
       translation 3.18432e-07 0 0.0028
-      rotation 0 1 0 3.14159
+      rotation 0 1 0 0
       children [
         DEF CAMERA Shape {
           appearance Appearance {
@@ -130,9 +127,9 @@ Robot {
           }
         }
       ]
-      name "camera_bottom"
+      name "camera_front"
     }
-    DEF CAMERA_FRONT Camera {
+    DEF CAMERA_BOTTOM Camera {
       translation 0.05 0 0.03
       rotation 0 1 0 1.5708
       children [
@@ -148,7 +145,7 @@ Robot {
           }
         }
       ]
-      name "camera_front"
+      name "camera_bottom"
     }
     DEF BODY Pose {
       translation 0 0 0.0508
@@ -178,8 +175,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 4.376766822033793e-05 0.05499999998984264 0.019995840396196334
-        rotation 0.25129243476054836 0.6846878532818058 0.6841452008166599 3.634361032335386
+        translation 4.3767668220340615e-05 0.05499999998984264 0.019995840396196337
+        rotation 0.2512924347605481 0.6846878532818056 0.6841452008166602 3.6343610323353883
         children [
           DEF WHEEL Shape {
             appearance Appearance {
@@ -210,8 +207,8 @@ Robot {
         }
       ]
       endPoint Solid {
-        translation 3.496784123130154e-05 -0.055000000010165105 0.01999714296422539
-        rotation -0.33380506505118573 -0.6665489796285811 -0.666548300052045 2.4972419354851487
+        translation 3.496784123129935e-05 -0.055000000010165105 0.019997142964225393
+        rotation -0.3338050650511856 -0.6665489796285817 -0.6665483000520442 2.497241935485148
         children [
           USE WHEEL
         ]
@@ -222,7 +219,8 @@ Robot {
       }
     }
     DEF TEETH_1 Solid {
-      translation 0.07 -0.04 0.027
+      translation 0.05 -0.04 0.027
+      rotation 0 0 1 -0.261799
       children [
         DEF TEETH Shape {
           appearance Appearance {
@@ -231,7 +229,7 @@ Robot {
             }
           }
           geometry Box {
-            size 0.09 0.01 0.03
+            size 0.06 0.01 0.03
           }
         }
       ]
@@ -241,7 +239,8 @@ Robot {
       }
     }
     DEF TEETH_2 Solid {
-      translation 0.07 0.04 0.027
+      translation 0.05 0.04 0.027
+      rotation 0 0 1 0.261799
       children [
         USE TEETH
       ]
@@ -257,11 +256,12 @@ Robot {
   controller "Robot_Controller"
 }
 DEF Field-Generator E-puck {
-  hidden linearVelocity_0 0.00012668056913765034 3.193281336734061e-05 4.220356628603153e-08
-  hidden angularVelocity_0 -0.0021289378241296404 0.008445702677848372 7.52138996680323e-11
   translation 4.500270792448076 0.030241718862717235 1.3699360486382162
   rotation 0.0005418693470925839 6.7243900703376e-05 0.9999998509279231 -2.894663232078724
   name "Maze-Generator"
   controller "Create_Stadium"
   supervisor TRUE
+}
+Floor {
+  size 5 5
 }
